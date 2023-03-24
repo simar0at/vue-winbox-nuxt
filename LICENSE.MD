@@ -1,5 +1,6 @@
 MIT License
 
+Copyright (c) 2022 Robert Soriano https://github.com/wobsoriano
 Copyright (c) 2023 Omar Siam
 Copyright (c) 2023 ACDH-CH ÖAW
 
