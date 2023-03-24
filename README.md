@@ -1,4 +1,7 @@
-# Nuxt 3 Minimal Starter
+# Demo for Winbox.js wiht Vue 3 components on Nuxt 3
+
+* [WinBox.js](https://github.com/nextapps-de/winbox)
+* [Uses code from vue-winbox](https://github.com/wobsoriano/vue-winbox)
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
