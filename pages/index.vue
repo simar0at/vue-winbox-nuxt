@@ -10,7 +10,7 @@ const options = {
   height: '50%',
 }
 const winboxRef = ref()
-const isOpen = ref(true)
+const isOpen = ref(false)
 
 const setTitle = (count: number) => {
   winboxRef.value?.winbox?.setTitle(`Count: ${count}`)
@@ -29,9 +29,11 @@ const setTitle = (count: number) => {
 //   window.removeEventListener('resize', handleResize)
 // })
 
-const initialize = () => {
-  winboxRef.value?.initialize()
-}
+// const initialize = (event) => {
+//   if (winboxRef.value)
+//     winboxRef.value.initialize()
+//   else isOpen.value = true;
+// }
 
 const openUrl = async () => {
   const randomId = Math.floor(Math.random() * 20) + 1
@@ -47,15 +49,16 @@ const openUrl = async () => {
 <template>
   <div>  
     <VicavWinBox
-    ref="winboxRef"
+    :ref="(el) => winboxRef = el"
     :options="options"
     @focus="isOpen = true"
     @close="isOpen = false"
+    v-if="isOpen"
   >
     <Counter @update:count="setTitle" />
   </VicavWinBox>
   <div class="container">
-    <div v-show="!isOpen" class="button" @click="initialize">
+    <div v-show="!isOpen" class="button" @click="isOpen = true">
       Open Vue component
     </div>
     <div class="button" style="margin-top: 10px;" @click="openUrl">
