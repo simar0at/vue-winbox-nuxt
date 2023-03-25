@@ -65,13 +65,17 @@ const openCounter = () => {
 //   else isOpen.value = true;
 // }
 
-const openUrl = async () => {
+const openUrl = () => {
   const randomId = Math.floor(Math.random() * 20) + 1
-  const createWinBox = await useWinBox()
-  createWinBox({
-    title: `Fox #${randomId}`,
-    url: `https://randomfox.ca/images/${randomId}.jpg`,
-    class: 'modern',
+  windows.list.push({
+    id: `Fox${randomId}`,
+    vicavWinBoxRef: ref(),
+    isOpen: true,
+    kind: 'RemoteImage',
+    options: Object.assign({}, options, {title: `Fox #${randomId}`,
+    class: 'modern'}),
+    src: `https://randomfox.ca/images/${randomId}.jpg`,
+    alt: `Fox #${randomId}`
   })
 }
 </script>
@@ -100,7 +104,7 @@ const openUrl = async () => {
       Open Vue component
     </div>
     <div class="button" style="margin-top: 10px;" @click="openUrl">
-      Open Random URL
+      Open Random Picture URL
     </div>
   </div>
   </div>
