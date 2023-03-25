@@ -46,6 +46,13 @@ const openCounter = () => {
   if (counterWindow) counterWindow.isOpen = true
 }
 
+const windowClosing = (window: typeof windows.list[0]) => {
+  if (window.id === 'counter')
+    window.isOpen = false
+  else
+    windows.list = windows.list.filter(_ => _.id !== window.id)
+}
+
 // TODO: Check winbox status before resizing
 // const handleResize = () => {
 //   winboxRef.value?.winbox?.resize("50%", "50%").move("center", "center")
@@ -87,7 +94,7 @@ const openUrl = () => {
          :ref="(el) => window.vicavWinBoxRef = el"
          :options="window.options"
          @focus="window.isOpen = true"
-         @close="window.isOpen = false"
+         @close="() => windowClosing(window)"
          v-if="window.isOpen"
         >
           <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
