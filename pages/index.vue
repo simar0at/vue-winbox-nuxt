@@ -1,5 +1,6 @@
 <!-- See https://github.com/wobsoriano/vue-winbox/blob/master/playground/src/App.vue -->
 <script setup lang="ts">
+import type { ConcreteComponent } from 'vue'
 
 const options = {
   title: 'Set title!',
@@ -10,6 +11,16 @@ const options = {
   height: '50%',
 }
 
+const Counter = resolveComponent('Counter')
+
+// see https://nuxt.com/docs/guide/directory-structure/components#dynamic-components
+type forWinBoxComponents = {
+  [key: string]: ConcreteComponent | string
+}
+
+const forWinBoxComponents: forWinBoxComponents = {
+  Counter
+}
 
 const windows = reactive({list: [
   { id: 'counter',
@@ -71,7 +82,9 @@ const openUrl = async () => {
          @close="window.isOpen = false"
          v-if="window.isOpen"
         >
-          <Counter @update:count="setTitle" />
+          <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
+          <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
+          <component :is="forWinBoxComponents[window.kind]"></component>
         </VicavWinBox>
       </div>
   <div class="container">
