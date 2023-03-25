@@ -55,15 +55,17 @@ const openUrl = async () => {
 
 <template>
   <div>  
-    <VicavWinBox
-    :ref="(el) => windows.list[0].vicavWinBoxRef = el"
-    :options="options"
-    @focus="windows.list[0].isOpen = true"
-    @close="windows.list[0].isOpen = false"
-    v-if="windows.list[0].isOpen"
-  >
-    <Counter @update:count="setTitle" />
-  </VicavWinBox>
+      <div v-for="window in windows.list" :key="window.id">
+        <VicavWinBox
+         :ref="(el) => window.vicavWinBoxRef = el"
+         :options="window.options"
+         @focus="window.isOpen = true"
+         @close="window.isOpen = false"
+         v-if="window.isOpen"
+        >
+          <Counter @update:count="setTitle" />
+        </VicavWinBox>
+      </div>
   <div class="container">
     <div v-show="!windows.list[0].isOpen" class="button" @click="windows.list[0].isOpen = true">
       Open Vue component
