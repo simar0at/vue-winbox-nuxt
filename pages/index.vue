@@ -84,7 +84,8 @@ const openUrl = async () => {
         >
           <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
           <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
-          <component :is="forWinBoxComponents[window.kind]"></component>
+          <component :is="forWinBoxComponents[window.kind]"
+            @update:count="setTitle"></component>
         </VicavWinBox>
       </div>
   <div class="container">
