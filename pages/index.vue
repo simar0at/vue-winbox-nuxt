@@ -10,6 +10,7 @@ const options = {
   height: '50%',
 }
 
+
 const windows = reactive({list: [
   { id: 'counter',
     vicavWinBoxRef: ref(),
@@ -20,7 +21,14 @@ const windows = reactive({list: [
 ]})
 
 const setTitle = (count: number) => {
-  windows.list[0].vicavWinBoxRef.winbox?.setTitle(`Count: ${count}`)
+  const counterWindow = windows.list.find( _ => _.id === 'counter')
+  if (counterWindow)
+  counterWindow.vicavWinBoxRef.winbox?.setTitle(`Count: ${count}`)
+}
+
+const openCounter = () => {
+  const counterWindow = windows.list.find( _ => _.id === 'counter')
+  if (counterWindow) counterWindow.isOpen = true
 }
 
 // TODO: Check winbox status before resizing
@@ -67,7 +75,8 @@ const openUrl = async () => {
         </VicavWinBox>
       </div>
   <div class="container">
-    <div v-show="!windows.list[0].isOpen" class="button" @click="windows.list[0].isOpen = true">
+        <div v-show="!windows.list.find( _ => _.id === 'counter')?.isOpen" class="button"
+          @click="openCounter">
       Open Vue component
     </div>
     <div class="button" style="margin-top: 10px;" @click="openUrl">
