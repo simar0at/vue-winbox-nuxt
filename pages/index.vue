@@ -2,18 +2,25 @@
 <script setup lang="ts">
 
 const options = {
-  title: 'Count: 0',
+  title: 'Set title!',
   class: 'modern',
   x: 'center',
   y: 'center',
   width: '50%',
   height: '50%',
 }
-const winboxRef = ref()
-const isOpen = ref(false)
+
+const windows = reactive({list: [
+  { id: 'counter',
+    vicavWinBoxRef: ref(),
+    isOpen: false,
+    kind: 'Counter',
+    options: Object.assign({}, options, {title: 'Count: 0',})
+  }
+]})
 
 const setTitle = (count: number) => {
-  winboxRef.value?.winbox?.setTitle(`Count: ${count}`)
+  windows.list[0].vicavWinBoxRef.winbox?.setTitle(`Count: ${count}`)
 }
 
 // TODO: Check winbox status before resizing
@@ -49,16 +56,16 @@ const openUrl = async () => {
 <template>
   <div>  
     <VicavWinBox
-    :ref="(el) => winboxRef = el"
+    :ref="(el) => windows.list[0].vicavWinBoxRef = el"
     :options="options"
-    @focus="isOpen = true"
-    @close="isOpen = false"
-    v-if="isOpen"
+    @focus="windows.list[0].isOpen = true"
+    @close="windows.list[0].isOpen = false"
+    v-if="windows.list[0].isOpen"
   >
     <Counter @update:count="setTitle" />
   </VicavWinBox>
   <div class="container">
-    <div v-show="!isOpen" class="button" @click="isOpen = true">
+    <div v-show="!windows.list[0].isOpen" class="button" @click="windows.list[0].isOpen = true">
       Open Vue component
     </div>
     <div class="button" style="margin-top: 10px;" @click="openUrl">
