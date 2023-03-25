@@ -12,6 +12,7 @@ const options = {
 }
 
 const Counter = resolveComponent('Counter')
+const RemoteImage = resolveComponent('RemoteImage')
 
 // see https://nuxt.com/docs/guide/directory-structure/components#dynamic-components
 type forWinBoxComponents = {
@@ -19,7 +20,8 @@ type forWinBoxComponents = {
 }
 
 const forWinBoxComponents: forWinBoxComponents = {
-  Counter
+  Counter,
+  RemoteImage
 }
 
 const windows = reactive({list: [
@@ -27,7 +29,9 @@ const windows = reactive({list: [
     vicavWinBoxRef: ref(),
     isOpen: false,
     kind: 'Counter',
-    options: Object.assign({}, options, {title: 'Count: 0',})
+    options: Object.assign({}, options, {title: 'Count: 0',}),
+    src: '',
+    alt: ''
   }
 ]})
 
@@ -85,7 +89,9 @@ const openUrl = async () => {
           <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
           <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
           <component :is="forWinBoxComponents[window.kind]"
-            @update:count="setTitle"></component>
+            @update:count="setTitle"
+            :src="window.src"
+            :alt="window.alt"></component>
         </VicavWinBox>
       </div>
   <div class="container">
