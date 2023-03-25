@@ -90,7 +90,7 @@ const VicavWinBox = defineComponent({
       ? h(Teleport, {
         to: `#${selector} .wb-body`,
       }, slots.default?.())
-      : {}
+      : h('span')
   },
 })
 
