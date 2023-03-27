@@ -100,6 +100,19 @@ const openUrl = () => {
     </div>
     <div class="container-fluid text-center" id="main">
       <div class="row bg-dark">
+        <div class="col offset-8 align-items-start text-white">
+          <div class="dropdown mt-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Windows
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li v-for="window in windows.list" :key="window.id"><a :class="{ 'dropdown-item': true, disabled: !window.isOpen }" href="#">{{ window.options.title }}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row bg-dark">
         <div class="col offset-8 align-self-end">
           <div class="container-fluid">
             <div class="row">
@@ -109,7 +122,7 @@ const openUrl = () => {
               </button>
             </div>
             <div class="row">
-              <button type="button" class="col btn btn-primary mt-2 mb-2" @click="openUrl">
+              <button type="button" class="col btn btn-primary mt-2 mb-3" @click="openUrl">
                 Open Random Picture URL
               </button>
             </div>
@@ -123,6 +136,6 @@ const openUrl = () => {
 <!-- See ../app.vue for global styles -->
 <style scoped>
 #main > .row {
-  height: 100vh;
+  height: 50vh;
 }
 </style>
