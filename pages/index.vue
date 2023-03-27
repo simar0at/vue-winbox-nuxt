@@ -121,7 +121,7 @@ const openUrl = () => {
               WinBoxes
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
-              <li v-for="winbox in winboxes.list" :key="winbox.id"><a :class="{ 'dropdown-item': true, disabled: !winbox.isOpen }" href="#">{{ winbox.options.title }}</a></li>
+              <li v-for="winbox in winboxes.list" :key="winbox.id"><a :class="{ 'dropdown-item': true, disabled: !winbox.isOpen }" href="#" @click.prevent="() => winbox.vicavWinBoxRef?.winbox?.focus()">{{ winbox.options.title }}</a></li>
             </ul>
           </div>
         </div>
