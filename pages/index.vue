@@ -1,7 +1,7 @@
 <!-- See https://github.com/wobsoriano/vue-winbox/blob/master/playground/src/App.vue -->
 <script setup lang="ts">
 import type { ConcreteComponent } from 'vue'
-import type  VicavWinBox  from '../components/VicavWinBox.client.vue'
+import type VicavWinBox from '../components/VicavWinBox.client.vue'
 import type { Params as WinBoxOptions } from 'winbox';
 
 const options = {
@@ -67,6 +67,29 @@ const winboxClosing = (winbox: typeof winboxes.list[0]) => {
     winboxes.list = winboxes.list.filter(_ => _.id !== winbox.id)
 }
 
+const focusedWindow = ref<VicavWinBoxState | null>(null)
+
+const onMove = (args: {id: string | number | undefined, x: number, y: number }) => {
+  const vicavWinBoxRef = winboxes.list.find((_) => _.vicavWinBoxRef?.winbox?.id === args.id)
+  if (vicavWinBoxRef) {
+    vicavWinBoxRef.options.x = args.x    
+    vicavWinBoxRef.options.y = args.y
+  }
+}
+
+const onResize= (args: {id: string | number | undefined, width: number, height: number }) => {
+  const vicavWinBoxRef = winboxes.list.find((_) => _.vicavWinBoxRef?.winbox?.id === args.id)
+  if (vicavWinBoxRef) {
+    vicavWinBoxRef.options.width = args.width    
+    vicavWinBoxRef.options.height = args.height
+  }
+}
+
+const onFocus = (id: {id: string | number | undefined}) => {
+  focusedWindow.value = winboxes.list.find((_) => _.vicavWinBoxRef?.winbox?.id === id.id) as VicavWinBoxState
+  focusedWindow.value.isOpen = true
+}
+
 // TODO: Check winbox status before resizing
 // const handleResize = () => {
 //   winboxRef.value?.winbox?.resize("50%", "50%").move("center", "center")
@@ -104,8 +127,8 @@ const openUrl = () => {
 <template>
   <div>
     <div v-for="winbox in winboxes.list" :key="winbox.id">
-      <VicavWinBox :ref="(i: InstanceType<any>) => winbox.vicavWinBoxRef = i" :options="winbox.options" @focus="winbox.isOpen = true"
-        @close="() => winboxClosing(winbox)" v-if="winbox.isOpen">
+      <VicavWinBox :ref="(i: InstanceType<any>) => winbox.vicavWinBoxRef = i" :options="winbox.options" @focus="onFocus"
+        @close="() => winboxClosing(winbox)" @move="onMove" @resize="onResize" v-if="winbox.isOpen">
         <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
         <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
         <component :is="forWinBoxComponents[winbox.kind]" @update:count="setTitle" :src="winbox.src" :alt="winbox.alt">
@@ -114,14 +137,16 @@ const openUrl = () => {
     </div>
     <div class="container-fluid text-center" id="main">
       <div class="row bg-dark">
-        <div class="col offset-8 align-items-start text-white">
+        <div class="col offset-6 align-items-start text-white">
           <div class="dropdown mt-3">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               WinBoxes
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
-              <li v-for="winbox in winboxes.list" :key="winbox.id"><a :class="{ 'dropdown-item': true, disabled: !winbox.isOpen }" href="#" @click.prevent="() => winbox.vicavWinBoxRef?.winbox?.focus()">{{ winbox.options.title }}</a></li>
+              <li v-for="winbox in winboxes.list" :key="winbox.id"><a
+                  :class="{ 'dropdown-item': true, disabled: !winbox.isOpen }" href="#"
+                  @click.prevent="() => winbox.vicavWinBoxRef?.winbox?.focus()">{{ winbox.options.title }}</a></li>
             </ul>
           </div>
         </div>
@@ -129,6 +154,12 @@ const openUrl = () => {
       <div class="row bg-dark">
         <div class="col offset-8 align-self-end">
           <div class="container-fluid">
+            <div class="col text-white">
+              focused WinBox x: {{ focusedWindow?.options.x }} <br />
+              focused WinBox y: {{ focusedWindow?.options.y }} <br />
+              focused WinBox width: {{ focusedWindow?.options.width }} <br />
+              focused WinBox height: {{ focusedWindow?.options.height }} <br />
+            </div>
             <div class="row">
               <button type="button" class="col btn btn-primary mt-2 mb-2"
                 v-show="!winboxes.list.find(_ => _.id === 'counter')?.isOpen" @click="openCounter">
