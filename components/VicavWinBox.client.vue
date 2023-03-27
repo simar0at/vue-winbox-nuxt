@@ -1,39 +1,35 @@
-//vue-winbox/VueWinBox.ts at master · wobsoriano/vue-winbox
-//https://github.com/wobsoriano/vue-winbox/blob/master/src/components/VueWinBox.ts
-import type { PropType } from 'vue'
-import { Teleport, defineComponent, h, onMounted, onScopeDispose, ref } from 'vue'
-import { nanoid } from 'nanoid'
-
-const VicavWinBox = defineComponent({
-  name: 'VicavWinBox',
-  props: {
-    options: {
-      type: Object as PropType<WinBox.Params>,
-      required: true,
-    },
-    openOnMount: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  emits: [
-    'move',
-    'resize',
-    'close',
-    'focus',
-    'blur',
-  ],
-  setup(props, { slots, emit, expose }) {
+<script setup lang="ts">
+    import { nanoid } from 'nanoid'
+    import type { WinBoxConstructor, Params as WinBoxOptions } from 'winbox';
     const selector = `vuewinbox-${nanoid()}`
     const winbox = ref<WinBox | null>(null)
     const initialized = ref(false)
 
-    expose({
+    defineExpose({
       selector,
       winbox,
       initialized,
       initialize,
     })
+
+    const props = withDefaults(defineProps<{
+        openOnMount?: boolean,
+        options: WinBoxOptions | null
+    }>(), {
+      openOnMount: true,
+      options: null
+    })
+
+    interface resizeArgs {id: string | number | undefined , width: number, height: number }
+    interface moveArgs {id: string | number | undefined , x: number, y: number }
+    interface idArg {id: string | number | undefined}
+    const emit = defineEmits<{
+      (e: 'resize', _: resizeArgs): void
+      (e: 'close', id: idArg ): void
+      (e: 'focus', id: idArg): void
+      (e: 'blur', id: idArg): void
+      (e: 'move', _: moveArgs): void
+    }>()
 
     async function initialize() {
       if (initialized.value) {
@@ -76,8 +72,7 @@ const VicavWinBox = defineComponent({
 
     onMounted(() => {
       if (!props.openOnMount)
-        return
-      initialize()
+         winbox.value?.hide()      
     })
 
     onScopeDispose(() => {
@@ -85,13 +80,11 @@ const VicavWinBox = defineComponent({
       winbox.value?.close()
     })
 
-    return () => initialized.value
-    // @ts-expect-error: TODO
-      ? h(Teleport, {
-        to: `#${selector} .wb-body`,
-      }, slots.default?.())
-      : h('span')
-  },
-})
+    await initialize()
+</script>
 
-export default VicavWinBox
+<template>
+    <Teleport :to="`#${selector} .wb-body`">
+        <slot>No box content provided!</slot>
+    </Teleport>
+</template>
