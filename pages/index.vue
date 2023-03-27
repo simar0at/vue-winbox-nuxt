@@ -88,54 +88,41 @@ const openUrl = () => {
 </script>
 
 <template>
-  <div>  
-      <div v-for="window in windows.list" :key="window.id">
-        <VicavWinBox
-         :ref="(el) => window.vicavWinBoxRef = el"
-         :options="window.options"
-         @focus="window.isOpen = true"
-         @close="() => windowClosing(window)"
-         v-if="window.isOpen"
-        >
-          <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
-          <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
-          <component :is="forWinBoxComponents[window.kind]"
-            @update:count="setTitle"
-            :src="window.src"
-            :alt="window.alt"></component>
-        </VicavWinBox>
+  <div>
+    <div v-for="window in windows.list" :key="window.id">
+      <VicavWinBox :ref="(el) => window.vicavWinBoxRef = el" :options="window.options" @focus="window.isOpen = true"
+        @close="() => windowClosing(window)" v-if="window.isOpen">
+        <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
+        <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
+        <component :is="forWinBoxComponents[window.kind]" @update:count="setTitle" :src="window.src" :alt="window.alt">
+        </component>
+      </VicavWinBox>
+    </div>
+    <div class="container-fluid text-center" id="main">
+      <div class="row bg-dark">
+        <div class="col offset-8 align-self-end">
+          <div class="container-fluid">
+            <div class="row">
+              <button type="button" class="col btn btn-primary mt-2 mb-2"
+                v-show="!windows.list.find(_ => _.id === 'counter')?.isOpen" @click="openCounter">
+                Open Vue component
+              </button>
+            </div>
+            <div class="row">
+              <button type="button" class="col btn btn-primary mt-2 mb-2" @click="openUrl">
+                Open Random Picture URL
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-  <div class="container">
-        <div v-show="!windows.list.find( _ => _.id === 'counter')?.isOpen" class="button"
-          @click="openCounter">
-      Open Vue component
     </div>
-    <div class="button" style="margin-top: 10px;" @click="openUrl">
-      Open Random Picture URL
-    </div>
-  </div>
   </div>
 </template>
 
 <!-- See ../app.vue for global styles -->
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+#main > .row {
   height: 100vh;
-}
-
-.button {
-  padding: 5px 10px;
-  margin-bottom: 5px;
-  display: inline-block;
-  background-color: #ca00b4;
-  color: #fff;
-  width: auto;
-  border-radius: 10px;
-  padding: 15px 25px;
-  cursor: pointer;
 }
 </style>
