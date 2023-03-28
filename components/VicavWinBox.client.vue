@@ -20,14 +20,21 @@
       options: null
     })
 
-    interface resizeArgs {id: string | number | undefined , width: number, height: number }
-    interface moveArgs {id: string | number | undefined , x: number, y: number }
+    interface createArgs {id: string | number | undefined, options: WinBoxOptions}
+    interface resizeArgs {id: string | number | undefined, width: number, height: number }
+    interface moveArgs {id: string | number | undefined, x: number, y: number }
     interface idArg {id: string | number | undefined}
     const emit = defineEmits<{
+      (e: 'created', _: createArgs): void
       (e: 'resize', _: resizeArgs): void
       (e: 'close', id: idArg ): void
       (e: 'focus', id: idArg): void
       (e: 'blur', id: idArg): void
+      (e: 'minimize', id: idArg): void
+      (e: 'maximize', id: idArg): void
+      (e: 'fullscreen', id: idArg): void
+      (e: 'hide', id: idArg): void
+      (e: 'show', id: idArg): void
       (e: 'move', _: moveArgs): void
     }>()
 
@@ -63,6 +70,24 @@
             x,
             y,
           })
+        },
+        onmaximize: () => {
+          emit('maximize', { id: winbox.value?.id })
+        },
+        onminimize: () => {
+          emit('minimize', { id: winbox.value?.id })
+        },
+        onfullscreen: () => {
+          emit('fullscreen', { id: winbox.value?.id })
+        },
+        onhide: () => {
+          emit('hide', { id: winbox.value?.id })
+        },
+        onshow: () => {
+          emit('show', { id: winbox.value?.id })
+        },
+        oncreate: (options: WinBoxOptions) => {
+          emit('created', { id: winbox.value?.id, options })
         },
         ...props.options,
         id: selector,
