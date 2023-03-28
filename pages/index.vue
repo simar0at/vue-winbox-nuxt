@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { ConcreteComponent } from 'vue'
 import type VicavWinBox from '../components/VicavWinBox.client.vue'
-import type { Params as WinBoxOptions } from 'winbox';
+import type { Params as WinBoxOptions } from '@/types/winbox';
 
 const options = {
   title: 'Set title!',

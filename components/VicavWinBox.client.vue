@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { nanoid } from 'nanoid'
-    import type { WinBoxConstructor, Params as WinBoxOptions } from 'winbox';
+    import type { WinBoxConstructor, Params as WinBoxOptions } from '@/types/winbox';
     const selector = `vuewinbox-${nanoid()}`
     const winbox = ref<WinBox | null>(null)
     const initialized = ref(false)

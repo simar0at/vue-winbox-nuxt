@@ -1,6 +1,6 @@
 // vue-winbox/useWinBox.ts at master · wobsoriano/vue-winbox
 // https://github.com/wobsoriano/vue-winbox/blob/master/src/composables/useWinBox.ts
-import type WinBox from 'winbox'
+import type WinBox from '@/types/winbox'
 
 export async function useWinBox() {
   const nuxtApp = useNuxtApp()
