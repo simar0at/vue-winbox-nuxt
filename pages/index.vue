@@ -45,14 +45,14 @@ const winboxes: VicavWinBoxStates = reactive({list: [
     vicavWinBoxRef: null,
     isOpen: false,
     kind: 'Counter',
-    options: Object.assign({}, options, {title: 'Count: 0',})
+    options: { ...options, ...{title: 'Count: 0',} }
   }
 ]})
 
 const setTitle = (count: number) => {
   const counterwinbox = winboxes.list.find( _ => _.id === 'counter')
   if (counterwinbox)
-  counterwinbox.vicavWinBoxRef?.winbox?.setTitle(`Count: ${count}`)
+    counterwinbox.vicavWinBoxRef?.winbox?.setTitle(`Count: ${count}`)
 }
 
 const openCounter = () => {
@@ -90,6 +90,16 @@ const onFocus = (id: {id: string | number | undefined}) => {
   focusedWindow.value.isOpen = true
 }
 
+const onCreated = (args: {id: string | number | undefined, options: WinBoxOptions}) => {
+  const winbox = winboxes.list.find((_) => _.vicavWinBoxRef?.winbox?.id === args.id)
+  if (winbox) {
+    // will make th Vue component stop working on second reopen:
+    // winbox.options = {...args.options, ...winbox.options}
+    // we can however fill in some params like the id
+    winbox.options.id = args.options.id
+  }
+}
+
 // TODO: Check winbox status before resizing
 // const handleResize = () => {
 //   winboxRef.value?.winbox?.resize("50%", "50%").move("center", "center")
@@ -116,11 +126,19 @@ const openUrl = () => {
     vicavWinBoxRef: null,
     isOpen: true,
     kind: 'RemoteImage',
-    options: Object.assign({}, options, {title: `Fox #${randomId}`,
-    class: 'modern'}),
+    options: {...options, ...{title: `Fox #${randomId}`,
+    class: 'modern'}},
     src: `https://randomfox.ca/images/${randomId}.jpg`,
     alt: `Fox #${randomId}`
   })
+}
+
+const focusOrRestore = (winbox: VicavWinBoxState) => {
+  if (winbox.vicavWinBoxRef && winbox.vicavWinBoxRef.winbox) {
+    if (winbox.vicavWinBoxRef.winbox.min)
+      winbox.vicavWinBoxRef.winbox.restore()
+    winbox.vicavWinBoxRef.winbox.focus()
+  }
 }
 </script>
 
@@ -128,7 +146,7 @@ const openUrl = () => {
   <div>
     <div v-for="winbox in winboxes.list" :key="winbox.id">
       <VicavWinBox :ref="(i: InstanceType<any>) => winbox.vicavWinBoxRef = i" :options="winbox.options" @focus="onFocus"
-        @close="() => winboxClosing(winbox)" @move="onMove" @resize="onResize" v-if="winbox.isOpen">
+        @close="() => winboxClosing(winbox)" @move="onMove" @resize="onResize" v-if="winbox.isOpen" @created="onCreated">
         <!-- See https://vuejs.org/api/built-in-special-elements.html#component -->
         <!-- See https://nuxt.com/docs/guide/directory-structure/components#dynamic-components -->
         <component :is="forWinBoxComponents[winbox.kind]" @update:count="setTitle" :src="winbox.src" :alt="winbox.alt">
@@ -146,7 +164,7 @@ const openUrl = () => {
             <ul class="dropdown-menu dropdown-menu-dark">
               <li v-for="winbox in winboxes.list" :key="winbox.id"><a
                   :class="{ 'dropdown-item': true, disabled: !winbox.isOpen }" href="#"
-                  @click.prevent="() => winbox.vicavWinBoxRef?.winbox?.focus()">{{ winbox.options.title }}</a></li>
+                  @click.prevent="() => focusOrRestore(winbox)">{{ winbox.options.title }}</a></li>
             </ul>
           </div>
         </div>
@@ -155,10 +173,13 @@ const openUrl = () => {
         <div class="col offset-8 align-self-end">
           <div class="container-fluid">
             <div class="col text-white">
-              focused WinBox x: {{ focusedWindow?.options.x }} <br />
-              focused WinBox y: {{ focusedWindow?.options.y }} <br />
-              focused WinBox width: {{ focusedWindow?.options.width }} <br />
-              focused WinBox height: {{ focusedWindow?.options.height }} <br />
+              focused WinBox stats:<br/>
+              xml:id: {{ focusedWindow?.options.id }} <br />
+              <span v-if="focusedWindow && focusedWindow.vicavWinBoxRef && focusedWindow.vicavWinBoxRef.winbox && focusedWindow.vicavWinBoxRef.winbox.min">WinBox is minimized<br/></span>
+              x: {{ focusedWindow?.options.x }} <br />
+              y: {{ focusedWindow?.options.y }} <br />
+              width: {{ focusedWindow?.options.width }} <br />
+              height: {{ focusedWindow?.options.height }} <br />
             </div>
             <div class="row">
               <button type="button" class="col btn btn-primary mt-2 mb-2"
