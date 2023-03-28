@@ -6,43 +6,67 @@
 export as namespace WinBox;
 
 interface WinBox {
-    dom: Node;
-    background: string;
+    // instance:
     body: HTMLElement;
-    border: string | number;
-
-    class: string | string[];
-
-    html: string;
-    id: string | number;
+    bottom: number;
+    dom: Node;
+    focused: boolean;
+    full: boolean;
+    header: number;
+    height: number;
+    hidden: boolean;
+    id: string;
     index: number;
+    left: number;
     max: boolean;
-    modal: boolean;
-    root: Node;
+    maxheight: number;
+    maxwidth: number;
+    min: boolean;
+    minheight: number;
+    minwidth: number;
+    onblur: (this: WinBox) => void | undefined;
+    onclose: (this: WinBox, force: boolean) => boolean | undefined;
+    onfocus: (this: WinBox) => void | undefined;
+    onfullscreen: (this: WinBox) => void | undefined;
+    onhide: (this: WinBox) => void | undefined;
+    onmaximize: (this: WinBox) => void | undefined;
+    onminimize: (this: WinBox) => void | undefined;
+    onmove: (this: WinBox, x: number, y: number) => void | undefined;
+    onresize: (this: WinBox, width: number, height: number) => void | undefined;
+    onrestore: (this: WinBox) => void | undefined;
+    onshow: (this: WinBox) => void | undefined;
+    right: number;
     title: string;
-    url: string;
-    onfocus: (this: WinBox) => void;
-    onblur: (this: WinBox) => void;
-    onresize: (this: WinBox, width: number, height: number) => void;
-    onmove: (this: WinBox, x: number, y: number) => void;
-    onclose: (this: WinBox, force: boolean) => boolean;
-    mount(src?: Element): WinBox;
-    unmount(dest?: Element): WinBox;
-    setTitle(title: string): WinBox;
-    setBackground(background: string): WinBox;
-    setUrl(url: string): WinBox;
-    focus(): WinBox;
-    hide(): WinBox;
-    show(): WinBox;
-    minimize(state?: boolean): WinBox;
-    maximize(state?: boolean): WinBox;
-    fullscreen(state?: boolean): WinBox;
-    close(force?: boolean): boolean | void;
-    move(x?: string | number, y?: string | number, skipUpdate?: boolean): WinBox;
-    resize(w?: string | number, h?: string | number, skipUpdate?: boolean): WinBox;
+    top: number;
+    width: number;
+    window: HTMLElement;
+    
+    // prototype:
     addClass(classname: string): WinBox;
+    addControl(control: { classname:string, imageURL:string | undefined?, click: (this: WinBox, event: MouseEvent, self: WinBox) => void?, index:number? } | undefined): WinBox;
+    blur(state?: boolean): WinBox;
+    close(force?: boolean): boolean | void;
+    focus(state?: boolean): WinBox;
+    fullscreen(state?: boolean): WinBox;
+    hasClass(classname: string): boolean;
+    hide(state?: boolean): WinBox;
+    maximize(state?: boolean): WinBox;
+    minimize(state?: boolean): WinBox;
+    mount(src?: Element): WinBox;
+    move(x?: string | number, y?: string | number, skipUpdate?: boolean): WinBox;
     removeClass(classname: string): WinBox;
+    removeControl(classname: string): WinBox;
+    resize(w?: string | number, h?: string | number, skipUpdate?: boolean): WinBox;
+    restore(): WinBox;
+    setBackground(background: string): WinBox;
+    setIcon(src?: Element): WinBox;
+    setTitle(title: string): WinBox;
+    setUrl(url: string): WinBox;
+    show(state?: boolean): WinBox;
+    toggleClass(classname: string): WinBox;
+    unmount(dest?: Element): WinBox;
 }
+
 declare namespace WinBox {
     interface WinBoxConstructor {
         (title: string, params?: Params): WinBox;
